@@ -8,180 +8,206 @@ import java.util.Map;
 
 public class KeyPhrases {
 
-	private static String[] excludeList = { "this", "is", "a", "s", "it", "to",
-			"be", "punct_marker" };
+    private static String[] excludeList = { "this", "that", "it", "i", "we",
+            "is", "be", "s", "a", "to", "punct_marker", "am", "and" };
 
-	public static String substitutePunctuations(String text, String replacement) {
-		String substitutedString;
+    private static PorterStemmer porterStemmer = new PorterStemmer();
 
-		substitutedString = text.replaceAll("[,.]", " " + replacement + " ");
-		substitutedString = substitutedString.replaceAll("-|\\s+|'", " ");
-		return substitutedString;
-	}
+    public static String substitutePunctuations(String text, String replacement) {
+        String substitutedString;
 
-	public static List<String> extractUniGrams(String text) {
+        substitutedString = text.replaceAll("[,.]", " " + replacement + " ");
+        substitutedString = substitutedString.replaceAll("-|\\s+|'", " ");
+        return substitutedString;
+    }
 
-		List<String> excludeList = Arrays.asList(KeyPhrases.excludeList);
+    public static List<String> extractUniGrams(String text) {
 
-		List<String> unigrams = Arrays.asList(text.split(" "));
+        List<String> excludeList = Arrays.asList(KeyPhrases.excludeList);
 
-		List<String> cleanedUniGrams = new ArrayList<String>();
-		for (String unigram : unigrams) {
-			if (!excludeList.contains(unigram.toLowerCase())) {
-				cleanedUniGrams.add(unigram);
-			}
-		}
+        List<String> unigrams = Arrays.asList(text.split(" "));
 
-		return cleanedUniGrams;
-	}
+        List<String> cleanedUniGrams = new ArrayList<String>();
+        for (String unigram : unigrams) {
+            if (!excludeList.contains(unigram.toLowerCase())) {
+                cleanedUniGrams.add(unigram);
+            }
+        }
 
-	public static List<String> extractBiGrams(String text) {
+        return cleanedUniGrams;
+    }
 
-		List<String> unigrams = Arrays.asList(text.split(" "));
-		List<String> bigrams = new ArrayList<String>();
+    public static List<String> extractBiGrams(String text) {
 
-		List<String> excludeList = Arrays.asList(KeyPhrases.excludeList);
-		String prev = "";
-		for (String unigram : unigrams) {
+        List<String> unigrams = Arrays.asList(text.split(" "));
+        List<String> bigrams = new ArrayList<String>();
 
-			if (excludeList.contains(unigram.toLowerCase())) {
-				prev = "";
-				continue;
-			}
+        List<String> excludeList = Arrays.asList(KeyPhrases.excludeList);
+        String prev = "";
+        for (String unigram : unigrams) {
 
-			if (!prev.isEmpty()) {
-				bigrams.add(prev + " " + unigram);
-			}
-			prev = unigram;
-		}
+            if (excludeList.contains(unigram.toLowerCase())) {
+                prev = "";
+                continue;
+            }
 
-		return bigrams;
-	}
+            if (!prev.isEmpty()) {
+                bigrams.add(prev + " " + unigram);
+            }
+            prev = unigram;
+        }
 
-	public static List<String> extractUniGramsAndBiGrams(String text) {
+        return bigrams;
+    }
 
-		List<String> excludeList = Arrays.asList(KeyPhrases.excludeList);
+    public static List<String> extractUniGramsAndBiGrams(String text) {
 
-		List<String> unigrams = Arrays.asList(text.split(" "));
+        List<String> excludeList = Arrays.asList(KeyPhrases.excludeList);
 
-		List<String> keyPhrases = new ArrayList<String>();
-		String prev = "";
-		for (String unigram : unigrams) {
-			if (excludeList.contains(unigram.toLowerCase())) {
-				prev = "";
-				continue;
-			}
+        List<String> unigrams = Arrays.asList(text.split(" "));
 
-			keyPhrases.add(unigram);
-			if (!prev.isEmpty()) {
-				keyPhrases.add(prev + " " + unigram);
-			}
-			prev = unigram;
-		}
-		return keyPhrases;
-	}
+        List<String> keyPhrases = new ArrayList<String>();
+        String prev = "";
+        for (String unigram : unigrams) {
+            if (excludeList.contains(unigram.toLowerCase())) {
+                prev = "";
+                continue;
+            }
 
-	public static List<String> extractKeyPhrases(String text) {
+            keyPhrases.add(unigram);
+            if (!prev.isEmpty()) {
+                keyPhrases.add(prev + " " + unigram);
+            }
+            prev = unigram;
+        }
+        return keyPhrases;
+    }
 
-		List<String> excludeList = Arrays.asList(KeyPhrases.excludeList);
+    public static List<String> extractKeyPhrases(String text) {
 
-		List<String> unigrams = Arrays.asList(text.split(" "));
+        List<String> excludeList = Arrays.asList(KeyPhrases.excludeList);
 
-		List<String> keyPhrases = new ArrayList<String>();
-		String prev = "";
-		for (String unigram : unigrams) {
-			if (excludeList.contains(unigram.toLowerCase())) {
-				prev = "";
-				continue;
-			}
+        List<String> unigrams = Arrays.asList(text.split(" "));
 
-			keyPhrases.add(unigram);
-			if (!prev.isEmpty()) {
-				keyPhrases.add(prev + " " + unigram);
-			}
-			prev = unigram;
-		}
-		return keyPhrases;
-	}
+        List<String> keyPhrases = new ArrayList<String>();
+        String prev = "";
+        for (String unigram : unigrams) {
+            if (excludeList.contains(unigram.toLowerCase())) {
+                prev = "";
+                continue;
+            }
 
-	public static Map<String, Long> extractKeyPhrasesWithCount(String text) {
+            keyPhrases.add(unigram);
+            if (!prev.isEmpty()) {
+                keyPhrases.add(prev + " " + unigram);
+            }
+            prev = unigram;
+        }
+        return keyPhrases;
+    }
 
-		List<String> excludeList = Arrays.asList(KeyPhrases.excludeList);
-		List<String> unigrams = Arrays.asList(text.split(" "));
-		Map<String, Long> keyPhrases = new HashMap<String, Long>();
+    public static Map<String, Long> extractKeyPhrasesWithCount(String text) {
 
-		String prev = "";
-		for (String unigram : unigrams) {
+        List<String> excludeList = Arrays.asList(KeyPhrases.excludeList);
+        List<String> unigrams = Arrays.asList(text.split(" "));
+        Map<String, Long> keyPhrases = new HashMap<String, Long>();
 
-			if (excludeList.contains(unigram.toLowerCase())) {
+        String prev = "";
+        for (String unigram : unigrams) {
 
-				prev = "";
-			} else {
+            if (excludeList.contains(unigram.toLowerCase())) {
 
-				updateKeyPhrases(unigram, keyPhrases);
-				if (!prev.isEmpty()) {
+                prev = "";
+            } else {
 
-					String currBiGram = prev + " " + unigram;
-					updateKeyPhrases(currBiGram, keyPhrases);
-				}
-				prev = unigram;
-			}
-		}
+                updateKeyPhrases(null, unigram, keyPhrases);
+                if (!prev.isEmpty()) {
 
-		return keyPhrases;
-	}
+                    String currBiGram = prev + " " + unigram;
+                    updateKeyPhrases(prev, unigram, keyPhrases);
+                }
+                prev = unigram;
+            }
+        }
 
-	/*
-	 * Updates KeyPhrase Count if it exists Adds if it doesn't exist
-	 */
-	private static void updateKeyPhrases(String phrase,
-			Map<String, Long> keyPhrases) {
+        return keyPhrases;
+    }
 
-		Long one = (long) 1;
+    /*
+     * Updates KeyPhrase Count if it exists Adds if it doesn't exist
+     */
+    private static void updateKeyPhrases(String prevWord, String currWord,
+            Map<String, Long> keyPhrases) {
 
-		if (keyPhrases.containsKey(phrase)) {
-			keyPhrases.put(phrase, keyPhrases.get(phrase) + 1);
-		} else {
-			keyPhrases.put(phrase, one);
-		}
-	}
+        Long one = (long) 1;
 
-	public static void main(String[] args) {
+        String currStemmedWord;
+        if (currWord != null) {
+            int currWordLength = currWord.length();
+            porterStemmer.add(currWord.toLowerCase().toCharArray(),
+                    currWordLength);
+            porterStemmer.stem();
+            currStemmedWord = porterStemmer.toString();
+        } else {
+            return;
+        }
 
-		String input = "This is a market-place. It's supposed to be busy.";
+        String phrase;
+        if (prevWord != null) {
+            int prevWordLength = prevWord.length();
+            porterStemmer.add(prevWord.toLowerCase().toCharArray(),
+                    prevWordLength);
+            porterStemmer.stem();
+            String prevStemmedWord = porterStemmer.toString();
 
-		String cleanInput = KeyPhrases.substitutePunctuations(input,
-				"PUNCT_MARKER");
+            phrase = prevStemmedWord + " " + currStemmedWord;
+        } else {
+            phrase = currStemmedWord;
+        }
 
-		/*
-		 * List<String> unigrams = KeyPhrases.extractUniGrams(cleanInput); for
-		 * (String unigram : unigrams) { System.out.println(unigram); }
-		 */
+        if (keyPhrases.containsKey(phrase)) {
+            keyPhrases.put(phrase, keyPhrases.get(phrase) + 1);
+        } else {
+            keyPhrases.put(phrase, one);
+        }
+    }
 
-		/*
-		 * List<String> bigrams = KeyPhrases.extractBiGrams(cleanInput); for
-		 * (String bigram : bigrams) { System.out.println(bigram); }
-		 */
+    public static void main(String[] args) {
 
-		/*
-		 * List<String> uniGramsAndBiGrams = KeyPhrases
-		 * .extractUniGramsAndBiGrams(cleanInput); for (String uniGramAndBiGram
-		 * : uniGramsAndBiGrams) { System.out.println(uniGramAndBiGram); }
-		 */
+        String input = "That is a market-place. It's supposed to be busy. And I am still going to market-place";
 
-		/*
-		 * List<String> keyPhrases = KeyPhrases.extractKeyPhrases(cleanInput);
-		 * for (String keyPhrase : keyPhrases) { System.out.println(keyPhrase);
-		 * }
-		 */
+        String cleanInput = KeyPhrases.substitutePunctuations(input,
+                "PUNCT_MARKER");
 
-		Map<String, Long> keyPhrasesWithCount = KeyPhrases
-				.extractKeyPhrasesWithCount(cleanInput);
-		for (Map.Entry<String, Long> keyPhrase : keyPhrasesWithCount.entrySet()) {
-			System.out.format("%-13s Count: %-4d %n", keyPhrase.getKey(),
-					keyPhrase.getValue());
-		}
+        /*
+         * List<String> unigrams = KeyPhrases.extractUniGrams(cleanInput); for
+         * (String unigram : unigrams) { System.out.println(unigram); }
+         */
 
-	}
+        /*
+         * List<String> bigrams = KeyPhrases.extractBiGrams(cleanInput); for
+         * (String bigram : bigrams) { System.out.println(bigram); }
+         */
+
+        /*
+         * List<String> uniGramsAndBiGrams = KeyPhrases
+         * .extractUniGramsAndBiGrams(cleanInput); for (String uniGramAndBiGram
+         * : uniGramsAndBiGrams) { System.out.println(uniGramAndBiGram); }
+         */
+
+        /*
+         * List<String> keyPhrases = KeyPhrases.extractKeyPhrases(cleanInput);
+         * for (String keyPhrase : keyPhrases) { System.out.println(keyPhrase);
+         * }
+         */
+
+        Map<String, Long> keyPhrasesWithCount = KeyPhrases
+                .extractKeyPhrasesWithCount(cleanInput);
+        for (Map.Entry<String, Long> keyPhrase : keyPhrasesWithCount.entrySet()) {
+            System.out.format("%-13s Count: %-4d %n", keyPhrase.getKey(),
+                    keyPhrase.getValue());
+        }
+
+    }
 
 }
