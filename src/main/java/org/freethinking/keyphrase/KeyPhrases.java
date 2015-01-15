@@ -1,6 +1,5 @@
 package org.freethinking.keyphrase;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,82 +23,6 @@ public class KeyPhrases {
         substitutedString = text.replaceAll("[,.]", " " + replacement + " ");
         substitutedString = substitutedString.replaceAll("-|\\s+|'", " ");
         return substitutedString;
-    }
-
-    public List<String> extractKeyPhrases(String text) {
-
-        List<String> unigrams = Arrays.asList(text.split(" "));
-
-        List<String> keyPhrases = new ArrayList<String>();
-        String prev = "";
-        for (String unigram : unigrams) {
-            if (excludeList.contains(unigram.toLowerCase())) {
-                prev = "";
-                continue;
-            }
-
-            keyPhrases.add(unigram);
-            if (!prev.isEmpty()) {
-                keyPhrases.add(prev + " " + unigram);
-            }
-            prev = unigram;
-        }
-        return keyPhrases;
-    }
-
-    /*
-     * Updates KeyPhrase Count if it exists Adds if it doesn't exist
-     */
-    private void updateKeyPhrases(String prevWord, String currWord,
-            Map<String, Long> keyPhrases) {
-
-        Long one = (long) 1;
-
-        String currStemmedWord;
-        if (currWord != null) {
-            currStemmedWord = stem(currWord);
-        } else {
-            return;
-        }
-
-        String phrase;
-        if (prevWord != null) {
-            String prevStemmedWord = stem(prevWord);
-            phrase = prevStemmedWord + " " + currStemmedWord;
-        } else {
-            phrase = currStemmedWord;
-        }
-
-        if (keyPhrases.containsKey(phrase)) {
-            keyPhrases.put(phrase, keyPhrases.get(phrase) + 1);
-        } else {
-            keyPhrases.put(phrase, one);
-        }
-    }
-
-    public Map<String, Long> extractKeyPhrasesWithCount(String text) {
-
-        List<String> unigrams = Arrays.asList(text.split(" "));
-        Map<String, Long> keyPhrases = new HashMap<String, Long>();
-
-        String prev = "";
-        for (String unigram : unigrams) {
-
-            if (excludeList.contains(unigram.toLowerCase())) {
-
-                prev = "";
-            } else {
-
-                updateKeyPhrases(null, unigram, keyPhrases);
-                if (!prev.isEmpty()) {
-
-                    updateKeyPhrases(prev, unigram, keyPhrases);
-                }
-                prev = unigram;
-            }
-        }
-
-        return keyPhrases;
     }
 
     private String stem(String word) {
@@ -141,7 +64,7 @@ public class KeyPhrases {
     private Map<String, KeyPhraseStats> updateKeyPhrases(Word prevWord, Word currWord,
             Map<String, KeyPhraseStats> keyPhrases) {
 
-        long one = (long ) 1;
+        long one = (long) 1;
         String phrase, rawPhrase;
         long position;
 
@@ -165,39 +88,15 @@ public class KeyPhrases {
         if (keyPhrases.containsKey(phrase)) {
             keyPhraseStats = keyPhrases.get(phrase);
             keyPhraseStats.setCount(keyPhraseStats.getCount() + one);
-            keyPhraseStats.setPosition(Math.min(position, keyPhraseStats.getPosition()));            
+            keyPhraseStats.setPosition(Math.min(position, keyPhraseStats.getPosition()));
         }
         else {
             keyPhraseStats = new KeyPhraseStats();
             keyPhraseStats.setCount(one);
-            keyPhraseStats.setPosition(position);            
+            keyPhraseStats.setPosition(position);
         }
         keyPhrases.put(phrase, keyPhraseStats);
 
         return keyPhrases;
     }
-
-    public static void main(String[] args) {
-
-        String input = "That is a market-place. It's supposed to be busy. And I am still going to market-place";
-
-        KeyPhrases keyPhrases = new KeyPhrases();
-        String cleanInput = keyPhrases.substitutePunctuations(input,
-                "PUNCT_MARKER");
-
-        /*
-         * List<String> keyPhrases = keyPhrases.extractKeyPhrases(cleanInput);
-         * for (String keyPhrase : keyPhrases) { System.out.println(keyPhrase);
-         * }
-         */
-
-        Map<String, Long> keyPhrasesWithCount = keyPhrases
-                .extractKeyPhrasesWithCount(cleanInput);
-        for (Map.Entry<String, Long> keyPhrase : keyPhrasesWithCount.entrySet()) {
-            System.out.format("%-13s Count: %-4d %n", keyPhrase.getKey(),
-                    keyPhrase.getValue());
-        }
-
-    }
-
 }

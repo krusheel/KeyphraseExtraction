@@ -24,20 +24,6 @@ public class KeyPhrasesTest {
     }
 
     @Test
-    public void keyPhrasesWithStemmingTest() {
-        String inputString = "This is a market-place. It's supposed to be busy.";
-
-        String cleanInput = keyPhrases.substitutePunctuations(
-                inputString, "PUNCT_MARKER");
-        Map<String, Long> keyPhraseList = keyPhrases.extractKeyPhrasesWithCount(cleanInput);
-
-        System.out.println(keyPhraseList);
-
-        Assert.assertEquals("key phrases not matched",
-                5, keyPhraseList.size());
-    }
-
-    @Test
     public void keyPhrasesWithStatsTest() {
 
         String inputString = "This is a market-place. It's supposed to be busy.";
@@ -49,7 +35,7 @@ public class KeyPhrasesTest {
         for (Map.Entry<String, KeyPhraseStats> keyPhrase : keyPhraseList.entrySet()) {
             System.out.format("%-13s, Count: %-4d, Position: %-2d %n", keyPhrase.getKey(),
                     keyPhrase.getValue().getCount(), keyPhrase.getValue().getPosition());
-            
+
         }
 
     }
